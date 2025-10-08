@@ -34,13 +34,13 @@ class MapState(rx.State):
             self.loading = True
             self.error = ""
         try:
-            geolocator = Nominatim(user_agent="northwind_reflex_app")
+            geolocator = Nominatim(user_agent="northwind_reflex_app", timeout=10)
             geocode = RateLimiter(
-                geolocator.geocode, min_delay_seconds=1.1, error_wait_seconds=5.0
+                geolocator.geocode, min_delay_seconds=0.5, error_wait_seconds=5.0
             )
             async with rx.asession() as session:
                 query = text(
-                    'SELECT "CompanyName", "City", "Country", "Address" FROM "Customers"'
+                    'SELECT TOP 50 "CompanyName", "City", "Country", "Address" FROM "Customers"'
                 )
                 result = await session.execute(query)
                 customers = result.mappings().all()
