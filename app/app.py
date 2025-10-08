@@ -19,7 +19,7 @@ def header() -> rx.Component:
                 class_name="p-2 text-gray-600 hover:bg-gray-100 rounded-lg sm:hidden",
             ),
             rx.el.h1(
-                f"Northwind / {BaseState.active_table}",
+                f"Northwinds / {BaseState.active_table}",
                 class_name="text-2xl font-semibold text-gray-800",
             ),
             class_name="flex items-center gap-4",
