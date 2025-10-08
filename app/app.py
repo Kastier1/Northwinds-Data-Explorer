@@ -8,7 +8,7 @@ from app.states.data_table_state import DataTableState
 from app.states.query_builder_state import QueryBuilderState
 
 
-def header(title: rx.Var[str]) -> rx.Component:
+def header() -> rx.Component:
     return rx.el.header(
         rx.el.div(
             rx.el.button(
@@ -17,7 +17,7 @@ def header(title: rx.Var[str]) -> rx.Component:
                 class_name="p-2 text-gray-600 hover:bg-gray-100 rounded-lg sm:hidden",
             ),
             rx.el.h1(
-                f"Northwind / {title}",
+                f"Northwind / {BaseState.active_table}",
                 class_name="text-2xl font-semibold text-gray-800",
             ),
             class_name="flex items-center gap-4",
@@ -30,7 +30,7 @@ def index() -> rx.Component:
     return rx.el.div(
         sidebar(),
         rx.el.main(
-            header(BaseState.active_table),
+            header(),
             data_table(),
             class_name=rx.cond(
                 BaseState.is_sidebar_open, "transition-all sm:ml-64", "transition-all"
@@ -44,7 +44,21 @@ def query_builder() -> rx.Component:
     return rx.el.div(
         sidebar(),
         rx.el.main(
-            header("Query Builder"),
+            rx.el.header(
+                rx.el.div(
+                    rx.el.button(
+                        rx.icon(tag="menu", class_name="h-6 w-6"),
+                        on_click=BaseState.toggle_sidebar,
+                        class_name="p-2 text-gray-600 hover:bg-gray-100 rounded-lg sm:hidden",
+                    ),
+                    rx.el.h1(
+                        "Northwind / Query Builder",
+                        class_name="text-2xl font-semibold text-gray-800",
+                    ),
+                    class_name="flex items-center gap-4",
+                ),
+                class_name="bg-white border-b border-gray-200 p-4 sticky top-0 z-30",
+            ),
             query_builder_page(),
             class_name=rx.cond(
                 BaseState.is_sidebar_open, "transition-all sm:ml-64", "transition-all"
