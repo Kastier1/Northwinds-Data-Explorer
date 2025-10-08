@@ -1,80 +1,6 @@
 import reflex as rx
+import reflex_enterprise as rxe
 from app.states.data_table_state import DataTableState
-from app.states.base_state import BaseState
-
-
-def table_header() -> rx.Component:
-    return rx.el.thead(
-        rx.el.tr(
-            rx.foreach(
-                DataTableState.columns,
-                lambda col: rx.el.th(
-                    col,
-                    scope="col",
-                    class_name="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
-                ),
-            ),
-            class_name="bg-gray-50",
-        )
-    )
-
-
-def table_row(row_data: dict) -> rx.Component:
-    return rx.el.tr(
-        rx.foreach(
-            DataTableState.columns,
-            lambda col: rx.el.td(
-                rx.cond(row_data[col], row_data[col].to_string(), "N/A"),
-                class_name="px-6 py-4 whitespace-nowrap text-sm text-gray-700 max-w-xs truncate",
-            ),
-        ),
-        class_name="bg-white even:bg-gray-50 hover:bg-sky-50",
-    )
-
-
-def pagination_controls() -> rx.Component:
-    return rx.el.nav(
-        rx.el.div(
-            rx.el.p(
-                "Showing ",
-                rx.el.span(
-                    (DataTableState.current_page - 1) * DataTableState.items_per_page
-                    + 1,
-                    class_name="font-medium",
-                ),
-                " to ",
-                rx.el.span(
-                    rx.cond(
-                        DataTableState.current_page * DataTableState.items_per_page
-                        > DataTableState.total_items,
-                        DataTableState.total_items,
-                        DataTableState.current_page * DataTableState.items_per_page,
-                    ),
-                    class_name="font-medium",
-                ),
-                " of ",
-                rx.el.span(DataTableState.total_items, class_name="font-medium"),
-                " results",
-                class_name="text-sm text-gray-700",
-            )
-        ),
-        rx.el.div(
-            rx.el.button(
-                "Previous",
-                on_click=DataTableState.prev_page,
-                disabled=DataTableState.current_page <= 1,
-                class_name="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed",
-            ),
-            rx.el.button(
-                "Next",
-                on_click=DataTableState.next_page,
-                disabled=DataTableState.current_page >= DataTableState.total_pages,
-                class_name="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed",
-            ),
-            class_name="flex",
-        ),
-        class_name="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6",
-    )
 
 
 def data_table() -> rx.Component:
@@ -95,26 +21,16 @@ def data_table() -> rx.Component:
             class_name="px-4 sm:px-6 lg:px-8 py-4",
         ),
         rx.el.div(
-            rx.el.div(
-                rx.el.table(
-                    table_header(),
-                    rx.el.tbody(rx.foreach(DataTableState.paged_data, table_row)),
-                    class_name="min-w-full divide-y divide-gray-200",
-                ),
-                rx.cond(
-                    DataTableState.loading,
-                    rx.el.div(
-                        rx.el.div(
-                            rx.spinner(class_name="text-sky-500"),
-                            class_name="flex items-center justify-center p-8",
-                        ),
-                        class_name="absolute inset-0 bg-white/80 backdrop-blur-sm",
-                    ),
-                ),
-                class_name="relative overflow-x-auto",
+            rxe.ag_grid(
+                id="data_table_grid",
+                column_defs=DataTableState.column_defs,
+                row_data=DataTableState.table_data,
+                quick_filter_text=DataTableState.search_query,
+                pagination=True,
+                pagination_page_size=10,
+                theme="quartz",
             ),
-            class_name="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg",
+            class_name="h-[600px] w-full p-4",
         ),
-        pagination_controls(),
-        class_name="flex flex-col",
+        class_name="flex flex-col h-full",
     )

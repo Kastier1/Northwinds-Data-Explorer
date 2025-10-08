@@ -52,42 +52,15 @@ def results_table() -> rx.Component:
                 rx.cond(
                     QueryBuilderState.query_results.length() > 0,
                     rx.el.div(
-                        rx.el.table(
-                            rx.el.thead(
-                                rx.el.tr(
-                                    rx.foreach(
-                                        QueryBuilderState.query_columns,
-                                        lambda col: rx.el.th(
-                                            col,
-                                            class_name="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
-                                        ),
-                                    ),
-                                    class_name="bg-gray-50",
-                                )
-                            ),
-                            rx.el.tbody(
-                                rx.foreach(
-                                    QueryBuilderState.query_results,
-                                    lambda row: rx.el.tr(
-                                        rx.foreach(
-                                            QueryBuilderState.query_columns,
-                                            lambda col: rx.el.td(
-                                                rx.cond(
-                                                    row[col],
-                                                    row[col].to_string(),
-                                                    "N/A",
-                                                ),
-                                                class_name="px-6 py-4 whitespace-nowrap text-sm text-gray-700",
-                                            ),
-                                        ),
-                                        class_name="bg-white even:bg-gray-50",
-                                    ),
-                                ),
-                                class_name="divide-y divide-gray-200",
-                            ),
-                            class_name="min-w-full divide-y divide-gray-200",
+                        rxe.ag_grid(
+                            id="query_results_grid",
+                            column_defs=QueryBuilderState.query_column_defs,
+                            row_data=QueryBuilderState.query_results,
+                            pagination=True,
+                            pagination_page_size=10,
+                            theme="quartz",
                         ),
-                        class_name="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg overflow-x-auto",
+                        class_name="h-[600px] w-full",
                     ),
                     rx.el.div(
                         "No results to display. Click on tables to build a query, then execute it.",

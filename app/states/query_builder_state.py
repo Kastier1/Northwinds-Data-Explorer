@@ -27,6 +27,20 @@ class QueryBuilderState(rx.State):
         "Products-Suppliers": "Products.SupplierID = Suppliers.SupplierID",
     }
 
+    @rx.var
+    def query_column_defs(self) -> list[dict[str, str]]:
+        """The column definitions for the query results."""
+        return [
+            {
+                "field": col,
+                "headerName": col,
+                "sortable": True,
+                "filter": True,
+                "resizable": True,
+            }
+            for col in self.query_columns
+        ]
+
     @rx.event
     def on_load(self):
         """Initialize nodes and edges for the flow component."""
