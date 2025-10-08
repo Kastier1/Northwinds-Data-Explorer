@@ -3,7 +3,7 @@ from app.states.base_state import BaseState
 from app.states.data_table_state import DataTableState
 
 
-def sidebar_item(text: str, is_active: bool) -> rx.Component:
+def sidebar_item(text: str, is_active: bool, href: str, on_click_event) -> rx.Component:
     return rx.el.li(
         rx.el.a(
             rx.el.div(
@@ -11,8 +11,8 @@ def sidebar_item(text: str, is_active: bool) -> rx.Component:
                 text,
                 class_name="flex items-center",
             ),
-            href="#",
-            on_click=lambda: DataTableState.set_active_table_and_fetch(text),
+            href=href,
+            on_click=on_click_event,
             class_name=rx.cond(
                 is_active,
                 "flex items-center p-2 text-gray-900 rounded-lg bg-sky-100 font-semibold",
@@ -34,10 +34,19 @@ def sidebar() -> rx.Component:
                     class_name="flex items-center p-4",
                 ),
                 rx.el.ul(
+                    sidebar_item(
+                        "Query Builder",
+                        BaseState.active_table == "Query Builder",
+                        "/query-builder",
+                        lambda: BaseState.set_active_table("Query Builder"),
+                    ),
                     rx.foreach(
                         BaseState.tables,
                         lambda table: sidebar_item(
-                            table, BaseState.active_table == table
+                            table,
+                            BaseState.active_table == table,
+                            "/",
+                            lambda: DataTableState.set_active_table_and_fetch(table),
                         ),
                     ),
                     class_name="space-y-2 font-medium",
