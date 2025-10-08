@@ -2,5 +2,3 @@
 reflex==0.8.14
 aioodbc>=0.5.0
 pyodbc>=5.2.0
-reflex-enterprise
-geopy>=2.4.1
