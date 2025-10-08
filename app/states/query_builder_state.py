@@ -45,7 +45,7 @@ class QueryBuilderState(rx.State):
             return
         tables = self.dropped_tables
         if len(tables) == 1:
-            self.generated_sql = f'SELECT * FROM "{tables[0]}" LIMIT 100'
+            self.generated_sql = f'SELECT TOP 100 * FROM "{tables[0]}"'
             return
         joins = {
             ("Orders", "Customers"): "Orders.CustomerID = Customers.CustomerID",
@@ -67,7 +67,7 @@ class QueryBuilderState(rx.State):
                 "Territories",
             ): "EmployeeTerritories.TerritoryID = Territories.TerritoryID",
         }
-        query_parts = [f'SELECT * FROM "{tables[0]}"']
+        query_parts = [f'SELECT TOP 100 * FROM "{tables[0]}"']
         joined_tables = {tables[0]}
         for table_to_join in tables[1:]:
             join_found = False
@@ -87,7 +87,6 @@ class QueryBuilderState(rx.State):
             else:
                 query_parts.append(f'CROSS JOIN "{table_to_join}"')
                 joined_tables.add(table_to_join)
-        query_parts.append("LIMIT 100")
         self.generated_sql = " ".join(query_parts)
 
     @rx.event(background=True)
