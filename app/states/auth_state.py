@@ -9,4 +9,4 @@ class AuthState(AzureAuthState):
 
     @rx.event
     async def on_load(self):
-        return await super().on_load()
+        pass
