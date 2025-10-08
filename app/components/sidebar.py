@@ -44,7 +44,7 @@ def sidebar() -> rx.Component:
                         icon_tag="binary",
                     ),
                     sidebar_item(
-                        "Customer Map",
+                        "Customer's Map",
                         BaseState.active_table == "Customer Map",
                         "/customer-map",
                         lambda: BaseState.set_active_table("Customer Map"),
