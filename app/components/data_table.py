@@ -8,6 +8,19 @@ def data_table() -> rx.Component:
         rx.el.div(
             rx.el.div(
                 rx.el.div(
+                    rx.el.h2(
+                        "Employees", class_name="text-lg font-semibold text-gray-900"
+                    ),
+                    rx.el.p(
+                        "A list of all the employees in your account including their name, title, and email.",
+                        class_name="mt-1 text-sm text-gray-700",
+                    ),
+                    class_name="sm:flex-auto",
+                ),
+                class_name="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between",
+            ),
+            rx.el.div(
+                rx.el.div(
                     rx.el.input(
                         placeholder="Search...",
                         on_change=DataTableState.set_search_query.debounce(300),
@@ -19,7 +32,7 @@ def data_table() -> rx.Component:
                     ),
                     class_name="relative",
                 ),
-                class_name="px-4 py-4 sm:px-6 lg:px-8",
+                class_name="mt-6",
             ),
             rx.el.div(
                 rxe.ag_grid(
@@ -30,11 +43,11 @@ def data_table() -> rx.Component:
                     pagination=True,
                     pagination_page_size=10,
                     theme="quartz",
-                    dom_layout="autoHeight",
+                    height="600px",
                 ),
-                class_name="w-full",
+                class_name="mt-6 flow-root",
             ),
-            class_name="bg-white border rounded-lg shadow-sm",
+            class_name="bg-white p-6 rounded-lg shadow",
         ),
         class_name="p-4 sm:p-6 lg:p-8",
     )
