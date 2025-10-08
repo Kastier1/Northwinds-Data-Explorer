@@ -33,10 +33,12 @@ def index() -> rx.Component:
             header(),
             data_table(),
             class_name=rx.cond(
-                BaseState.is_sidebar_open, "transition-all sm:ml-64", "transition-all"
+                BaseState.is_sidebar_open,
+                "transition-all sm:ml-64 flex-1",
+                "transition-all flex-1",
             ),
         ),
-        class_name="min-h-screen bg-gray-50 font-['Open_Sans']",
+        class_name="min-h-screen bg-gray-50 font-['Open_Sans'] flex",
     )
 
 
