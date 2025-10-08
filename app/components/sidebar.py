@@ -3,11 +3,13 @@ from app.states.base_state import BaseState
 from app.states.data_table_state import DataTableState
 
 
-def sidebar_item(text: str, is_active: bool, href: str, on_click_event) -> rx.Component:
+def sidebar_item(
+    text: str, is_active: bool, href: str, on_click_event, icon_tag: str = "layout-grid"
+) -> rx.Component:
     return rx.el.li(
         rx.el.a(
             rx.el.div(
-                rx.icon(tag="layout-grid", class_name="mr-3 h-5 w-5"),
+                rx.icon(tag=icon_tag, class_name="mr-3 h-5 w-5"),
                 text,
                 class_name="flex items-center",
             ),
@@ -39,7 +41,16 @@ def sidebar() -> rx.Component:
                         BaseState.active_table == "Query Builder",
                         "/query-builder",
                         lambda: BaseState.set_active_table("Query Builder"),
+                        icon_tag="binary",
                     ),
+                    sidebar_item(
+                        "Customer Map",
+                        BaseState.active_table == "Customer Map",
+                        "/customer-map",
+                        lambda: BaseState.set_active_table("Customer Map"),
+                        icon_tag="map",
+                    ),
+                    rx.el.hr(class_name="my-2"),
                     rx.foreach(
                         BaseState.tables,
                         lambda table: sidebar_item(

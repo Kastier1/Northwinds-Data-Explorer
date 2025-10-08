@@ -3,9 +3,11 @@ import reflex_enterprise as rxe
 from app.components.sidebar import sidebar
 from app.components.data_table import data_table
 from app.components.query_builder import query_builder_page
+from app.components.map_page import map_page
 from app.states.base_state import BaseState
 from app.states.data_table_state import DataTableState
 from app.states.query_builder_state import QueryBuilderState
+from app.states.map_state import MapState
 
 
 def header() -> rx.Component:
@@ -32,6 +34,36 @@ def index() -> rx.Component:
         rx.el.main(
             header(),
             data_table(),
+            class_name=rx.cond(
+                BaseState.is_sidebar_open,
+                "transition-all sm:ml-64 flex-1",
+                "transition-all flex-1",
+            ),
+        ),
+        class_name="min-h-screen bg-gray-50 font-['Open_Sans'] flex",
+    )
+
+
+def customer_map() -> rx.Component:
+    return rx.el.div(
+        sidebar(),
+        rx.el.main(
+            rx.el.header(
+                rx.el.div(
+                    rx.el.button(
+                        rx.icon(tag="menu", class_name="h-6 w-6"),
+                        on_click=BaseState.toggle_sidebar,
+                        class_name="p-2 text-gray-600 hover:bg-gray-100 rounded-lg sm:hidden",
+                    ),
+                    rx.el.h1(
+                        "Northwind / Customer Map",
+                        class_name="text-2xl font-semibold text-gray-800",
+                    ),
+                    class_name="flex items-center gap-4",
+                ),
+                class_name="bg-white border-b border-gray-200 p-4 sticky top-0 z-30",
+            ),
+            map_page(),
             class_name=rx.cond(
                 BaseState.is_sidebar_open,
                 "transition-all sm:ml-64 flex-1",
@@ -79,7 +111,16 @@ app = rxe.App(
             href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap",
             rel="stylesheet",
         ),
+        rx.el.link(
+            rel="stylesheet",
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=",
+            cross_origin="",
+        ),
     ],
 )
 app.add_page(index, on_load=DataTableState.fetch_data)
 app.add_page(query_builder, on_load=QueryBuilderState.on_load)
+app.add_page(
+    customer_map, route="/customer-map", on_load=MapState.fetch_customer_locations
+)
