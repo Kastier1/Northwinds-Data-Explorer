@@ -5,9 +5,10 @@ from app.components.data_table import data_table
 from app.components.query_builder import query_builder_page
 from app.states.base_state import BaseState
 from app.states.data_table_state import DataTableState
+from app.states.query_builder_state import QueryBuilderState
 
 
-def header() -> rx.Component:
+def header(title: rx.Var[str]) -> rx.Component:
     return rx.el.header(
         rx.el.div(
             rx.el.button(
@@ -16,7 +17,7 @@ def header() -> rx.Component:
                 class_name="p-2 text-gray-600 hover:bg-gray-100 rounded-lg sm:hidden",
             ),
             rx.el.h1(
-                f"Northwind / {BaseState.active_table}",
+                f"Northwind / {title}",
                 class_name="text-2xl font-semibold text-gray-800",
             ),
             class_name="flex items-center gap-4",
@@ -29,7 +30,7 @@ def index() -> rx.Component:
     return rx.el.div(
         sidebar(),
         rx.el.main(
-            header(),
+            header(BaseState.active_table),
             data_table(),
             class_name=rx.cond(
                 BaseState.is_sidebar_open, "transition-all sm:ml-64", "transition-all"
@@ -43,21 +44,7 @@ def query_builder() -> rx.Component:
     return rx.el.div(
         sidebar(),
         rx.el.main(
-            rx.el.header(
-                rx.el.div(
-                    rx.el.button(
-                        rx.icon(tag="menu", class_name="h-6 w-6"),
-                        on_click=BaseState.toggle_sidebar,
-                        class_name="p-2 text-gray-600 hover:bg-gray-100 rounded-lg sm:hidden",
-                    ),
-                    rx.el.h1(
-                        "Northwind / Query Builder",
-                        class_name="text-2xl font-semibold text-gray-800",
-                    ),
-                    class_name="flex items-center gap-4",
-                ),
-                class_name="bg-white border-b border-gray-200 p-4 sticky top-0 z-30",
-            ),
+            header("Query Builder"),
             query_builder_page(),
             class_name=rx.cond(
                 BaseState.is_sidebar_open, "transition-all sm:ml-64", "transition-all"
@@ -79,4 +66,4 @@ app = rxe.App(
     ],
 )
 app.add_page(index, on_load=DataTableState.fetch_data)
-app.add_page(query_builder)
+app.add_page(query_builder, on_load=QueryBuilderState.on_load)
