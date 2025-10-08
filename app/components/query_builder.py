@@ -37,21 +37,22 @@ def results_table() -> rx.Component:
         rx.el.h3(
             "Query Results", class_name="text-lg font-semibold text-gray-700 mb-4"
         ),
-        rx.cond(
-            QueryBuilderState.loading,
-            rx.el.div(rx.spinner(), class_name="flex justify-center p-8"),
+        rx.el.div(
             rx.cond(
-                QueryBuilderState.error_message != "",
-                rx.el.div(
-                    rx.icon(
-                        "flag_triangle_right", class_name="h-5 w-5 text-red-500 mr-2"
-                    ),
-                    QueryBuilderState.error_message,
-                    class_name="flex items-center bg-red-100 text-red-700 p-4 rounded-lg",
-                ),
+                QueryBuilderState.loading,
+                rx.el.div(rx.spinner(), class_name="flex justify-center p-8"),
                 rx.cond(
-                    QueryBuilderState.query_results.length() > 0,
+                    QueryBuilderState.error_message != "",
                     rx.el.div(
+                        rx.icon(
+                            "flag_triangle_right",
+                            class_name="h-5 w-5 text-red-500 mr-2",
+                        ),
+                        QueryBuilderState.error_message,
+                        class_name="flex items-center bg-red-100 text-red-700 p-4 rounded-lg",
+                    ),
+                    rx.cond(
+                        QueryBuilderState.query_results.length() > 0,
                         rxe.ag_grid(
                             id="query_results_grid",
                             column_defs=QueryBuilderState.query_column_defs,
@@ -59,15 +60,16 @@ def results_table() -> rx.Component:
                             pagination=True,
                             pagination_page_size=10,
                             theme="quartz",
+                            dom_layout="autoHeight",
                         ),
-                        class_name="h-[600px] w-full",
-                    ),
-                    rx.el.div(
-                        "No results to display. Click on tables to build a query, then execute it.",
-                        class_name="text-gray-500 p-4",
+                        rx.el.div(
+                            "No results to display. Click on tables to build a query, then execute it.",
+                            class_name="text-gray-500 p-4",
+                        ),
                     ),
                 ),
             ),
+            class_name="bg-white border rounded-lg shadow-sm w-full",
         ),
         class_name="p-6",
     )
