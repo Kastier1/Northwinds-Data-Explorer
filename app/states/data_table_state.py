@@ -58,6 +58,9 @@ class DataTableState(rx.State):
             self.loading = True
             base_state = await self.get_state(BaseState)
             table_name = base_state.active_table
+            if table_name not in self.TABLE_MODEL_MAP:
+                base_state.active_table = "Employees"
+                table_name = "Employees"
         async with rx.asession() as session:
             query = text(f'SELECT * FROM "{table_name}"')
             result = await session.execute(query)
